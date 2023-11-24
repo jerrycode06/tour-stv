@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Tourest - Explore the World</title>
+
+		<!-- 
+      - favicon
+    -->
+		<link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml" />
+
+		<!-- 
+      - custom css link
+    -->
+		<link rel="stylesheet" href="./assets/css/style.css" />
+
+		<!-- 
+      - google font link
+    -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Comforter+Brush&family=Heebo:wght@400;500;600;700&display=swap"
+			rel="stylesheet" />
+
+		<!-- update the version number as needed -->
+		<script defer src="/__/firebase/10.6.0/firebase-app-compat.js"></script>
+		<!-- include only the Firebase features as you need -->
+		<script defer src="/__/firebase/10.6.0/firebase-auth-compat.js"></script>
+		<script
+			defer
+			src="/__/firebase/10.6.0/firebase-database-compat.js"></script>
+		<script
+			defer
+			src="/__/firebase/10.6.0/firebase-firestore-compat.js"></script>
+		<script
+			defer
+			src="/__/firebase/10.6.0/firebase-functions-compat.js"></script>
+		<script
+			defer
+			src="/__/firebase/10.6.0/firebase-messaging-compat.js"></script>
+		<script defer src="/__/firebase/10.6.0/firebase-storage-compat.js"></script>
+		<script
+			defer
+			src="/__/firebase/10.6.0/firebase-analytics-compat.js"></script>
+		<script
+			defer
+			src="/__/firebase/10.6.0/firebase-remote-config-compat.js"></script>
+		<script
+			defer
+			src="/__/firebase/10.6.0/firebase-performance-compat.js"></script>
+		<!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+		<script defer src="/__/firebase/init.js?useEmulator=true"></script>
+
+		<style media="screen">
+			body {
+				background: #eceff1;
+				color: rgba(0, 0, 0, 0.87);
+				font-family: Roboto, Helvetica, Arial, sans-serif;
+				margin: 0;
+				padding: 0;
+			}
+			#message {
+				background: white;
+				max-width: 360px;
+				margin: 100px auto 16px;
+				padding: 32px 24px;
+				border-radius: 3px;
+			}
+			#message h2 {
+				color: #ffa100;
+				font-weight: bold;
+				font-size: 16px;
+				margin: 0 0 8px;
+			}
+			#message h1 {
+				font-size: 22px;
+				font-weight: 300;
+				color: rgba(0, 0, 0, 0.6);
+				margin: 0 0 16px;
+			}
+			#message p {
+				line-height: 140%;
+				margin: 16px 0 24px;
+				font-size: 14px;
+			}
+			#message a {
+				display: block;
+				text-align: center;
+				background: #039be5;
+				text-transform: uppercase;
+				text-decoration: none;
+				color: white;
+				padding: 16px;
+				border-radius: 4px;
+			}
+			#message,
+			#message a {
+				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+			}
+			#load {
+				color: rgba(0, 0, 0, 0.4);
+				text-align: center;
+				font-size: 13px;
+			}
+			@media (max-width: 600px) {
+				body,
+				#message {
+					margin-top: 0;
+					background: white;
+					box-shadow: none;
+				}
+				body {
+					border-top: 16px solid #ffa100;
+				}
+			}
+		</style>
+	</head>
+
+	<body id="top">
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				const loadEl = document.querySelector("#load");
+				// // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+				// // The Firebase SDK is initialized and available here!
+				//
+				// firebase.auth().onAuthStateChanged(user => { });
+				// firebase.database().ref('/path/to/ref').on('value', snapshot => { });
+				// firebase.firestore().doc('/foo/bar').get().then(() => { });
+				// firebase.functions().httpsCallable('yourFunction')().then(() => { });
+				// firebase.messaging().requestPermission().then(() => { });
+				// firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+				// firebase.analytics(); // call to activate
+				// firebase.analytics().logEvent('tutorial_completed');
+				// firebase.performance(); // call to activate
+				//
+				// // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+
+				try {
+					let app = firebase.app();
+					let features = [
+						"auth",
+						"database",
+						"firestore",
+						"functions",
+						"messaging",
+						"storage",
+						"analytics",
+						"remoteConfig",
+						"performance",
+					].filter((feature) => typeof app[feature] === "function");
+					loadEl.textContent = `Firebase SDK loaded with ${features.join(
+						", "
+					)}`;
+				} catch (e) {
+					console.error(e);
+					loadEl.textContent =
+						"Error loading the Firebase SDK, check the console.";
+				}
+			});
+		</script>
+		<!-- Form Popup -->
+		<div class="overlay" id="overlay"></div>
+		<form class="popup" id="myPopup">
+			<div class="containe">
+				<h2>Holiday Package Booking</h2>
+		
+				<!-- Top Section: Holiday Package Details -->
+				<div class="form-group">
+					<label for="source">Source Name:</label>
+					<input type="text" id="source" name="source">
+				</div>
+		
+				<div class="form-group">
+					<label for="destination">Destination Name:</label>
+					<input type="text" id="destination" name="destination">
+				</div>
+		
+				<div class="form-group">
+					<label for="dateFrom">Date From:</label>
+					<input type="date" id="dateFrom" name="dateFrom">
+				</div>
+		
+				<div class="form-group">
+					<label for="dateTo">Date To:</label>
+					<input type="date" id="dateTo" name="dateTo">
+				</div>
+		
+				<!-- Bottom Section: Personal Details -->
+				<h2>Personal Details</h2>
+		
+				<div class="form-group">
+					<label for="name">Name:</label>
+					<input type="text" id="name" name="name">
+				</div>
+		
+				<div class="form-group">
+					<label for="email">Email:</label>
+					<input type="email" id="email" name="email">
+				</div>
+		
+				<div class="form-group">
+					<label for="number">Phone Number:</label>
+					<input type="tel" id="number" name="number">
+				</div>
+		
+				<div class="form-group">
+					<label for="company">Company Name:</label>
+					<input type="text" id="company" name="company">
+				</div>
+		
+				<button  type="submit" onclick="onSubmit(event)">Submit</button>
+			</div>
+		  <button class="close-popup-btn" onclick="closePopup(e)">X</button>
+		</form>
+
+		<!-- 
+        - #HEADER
+      -->
+
+		<header class="header" data-header>
+      <div class="container">
+        <a class="logo" href="#">
+          <img src="readme-images/7475999.webp" alt="logo" />
+          <h1 class="logo-text">STV Tours</h1>
+        </a>
+
+        <button
+          class="nav-toggle-btn"
+          data-nav-toggle-btn
+          aria-label="Toggle Menu"
+        >
+          <ion-icon name="menu-outline" class="open"></ion-icon>
+          <ion-icon name="close-outline" class="close"></ion-icon>
+        </button>
+
+        <nav class="navbar">
+          <ul class="navbar-list">
+            <!-- <li>
+              <a href="#" class="navbar-link">Home</a>
+            </li> -->
+
+            <li>
+              <a href="#services" class="navbar-link">Services</a>
+            </li>
+            <!-- 
+            <li>
+              <a href="#" class="navbar-link">Tours</a>
+            </li> -->
+
+            <li>
+              <a href="#about" class="navbar-link">About Us</a>
+            </li>
+
+            <li>
+              <a href="#popular" class="navbar-link">Reviews</a>
+            </li>
+
+            <!-- <li>
+              <a href="#" class="navbar-link">Contact Us</a>
+            </li> -->
+          </ul>
+<!-- change attribute to button tag and add id tag #form-button to show form popup -->
+          <button id="#form-button" onclick="showPopup()" class="btn btn-secondary">Contact Us</button>
+        </nav>
+      </div>
+    </header>
+
+		<main>
+			<article>
+				<!-- 
+            - #HERO
+          -->
+
+				<section
+					class="section hero"
+					style="
+						background-image: url('./assets/images/hero-bg-bottom.png')
+							url('./assets/images/hero-bg-top.png');
+					">
+					<div class="container">
+						<img
+							src="./assets/images/shape-1.png"
+							width="61"
+							height="61"
+							alt="Vector Shape"
+							class="shape shape-1" />
+
+						<img
+							src="./assets/images/shape-2.png"
+							width="56"
+							height="74"
+							alt="Vector Shape"
+							class="shape shape-2" />
+
+						<img
+							src="./assets/images/shape-3.png"
+							width="57"
+							height="72"
+							alt="Vector Shape"
+							class="shape shape-3" />
+
+						<div class="hero-content">
+							<p class="section-subtitle">Explore your tour and event</p>
+
+							<h2 class="hero-title">
+								Where Business Meets Exceptional Travel Experiences
+							</h2>
+
+							<!-- <p class="hero-text">
+                I travel not to go anywhere, but to go. I travel for travel's
+                sake the great affair is to move.
+              </p> -->
+
+							<div class="btn-group">
+								<!-- <a href="#" class="btn btn-primary">Contact Us</a> -->
+
+								<!-- <a href="#" class="btn btn-outline">Learn More</a> -->
+							</div>
+						</div>
+
+						<!-- <figure class="hero-banner">
+							<img
+								src="./assets/images/front_image.jpg"
+								width="686"
+								height="812"
+								loading="lazy"
+								alt="hero banner"
+								class="w-100" />
+						</figure> -->
+					</div>
+				</section>
+
+				<section id="services" class="section corporate-travel">
+					<div class="container">
+						<p class="section-subtitle"></p>
+
+						<h2 class="h2 section-title">Corporate travel</h2>
+
+						<div class="divider"></div>
+
+						<ul>
+						<li class="corporate-travel-area">
+							<div class="corporate-travel-content">
+								<p class="corporate-travel-text">
+									We make Business travel a pleasure. We are here to help you
+									travel differently we offer all kind of
+									<b style="color: black"
+										>Air ticket booking , Hotel accommodation , Train tickets
+										and Cab services</b
+									>. Are you looking for corporate travel management solution
+									that go beyond the ordinary method,<b
+										style="color: rgb(40, 46, 99)">
+										please contact us</b
+									>.
+								</p>
+							</div>
+							<img
+								src="assets/images/corporate-travel.jpeg"
+								alt="service-image" />
+						</li>
+						</ul>
+					</div>
+				</section>
+
+				<!-- 
+            - #services
+          -->
+
+				<section class="section services">
+					<div class="container">
+						<p class="section-subtitle"></p>
+
+						<h2 class="h2 section-title">Meetings and Events</h2>
+
+						<div class="divider"></div>
+
+						<ul class="services-list">
+							<li class="service temp-1">
+								<img
+									class="service-image"
+									src="assets/images/one.jpeg"
+									alt="service-image" />
+								<div class="service-content">
+									<h2 class="service-heading">Meetings & Seminars</h2>
+									<p class="service-text">
+										Choosing the ideal setting for your meetings or seminars is
+										pivotal for fostering the success and growth of your
+										organization. The triumphant execution of these events
+										hinges on careful planning, strategic venue selection, and a
+										profound understanding of on-site dynamics. Whether you're
+										organizing intimate gatherings, board meetings, on-site
+										events, or seminars with up to 1500 attendees, STV Tours delivers a superb combination of services and
+										meticulously orchestrated event management.
+									</p>
+								</div>
+							</li>
+							<li class="service temp-2">
+								<img
+									class="service-image"
+									src="assets/images/two.jpeg"
+									alt="service-image" />
+								<div class="service-content">
+									<h2 class="service-heading">Incentives</h2>
+									<p class="service-text">
+										STV Tours specializes in orchestrating events and
+										initiatives tailored for companies seeking to acknowledge
+										and reward their employees. Our innovative approach ensures
+										that every event is not just successful but leaves a lasting
+										impression. Recognizing the significance of such occasions,
+										our dynamic and skilled team is committed to:
+									</p>
+								</div>
+							</li>
+							<li class="service temp-1">
+								<img
+									class="service-image"
+									src="assets/images/three.jpg"
+									alt="service-image" />
+								<div class="service-content">
+									<h2 class="service-heading">Conference</h2>
+									<p class="service-text">
+										We offer an exceptional array of services encompassing the
+										planning and execution of creative corporate or business
+										events along with themed programs tailored to meet the
+										specific objectives of our clients. Our primary emphasis is
+										on delivering comprehensive support and services, including
+										accommodation and transportation, with meticulous attention
+										to every minor detail. This dedicated approach ensures the
+										overall success of each event.
+									</p>
+								</div>
+							</li>
+							<li class="service temp-2">
+								<img
+									class="service-image"
+									src="assets/images/four.jpg"
+									alt="service-image" />
+								<div class="service-content">
+									<h2 class="service-heading">Corporate Events</h2>
+									<p class="service-text">
+										At STV Tours, our event management team is
+										consistently driven by a deep passion to help companies
+										narrate their stories in a compelling and impactful manner.
+										We excel in generating brilliant ideas and crafting
+										strategically-driven, engaging content. What sets us apart
+										from other event organizers is our unique ability to deliver
+										events with a powerful impact, utilizing creatively devised
+										strategies and effective communication tools. Proactively
+										targeting the right audience, delivering constructive
+										messages, and ensuring seamless organization, we guarantee
+										that our corporate events are not only engaging but also
+										meet the specific needs of the moment.
+									</p>
+								</div>
+							</li>
+							<li class="service temp-1">
+								<img
+									class="service-image"
+									src="assets/images/five.jpg"
+									alt="service-image" />
+								<div class="service-content">
+									<h2 class="service-heading">Itinerary Planning</h2>
+									<p class="service-text">
+										STV Tours possesses the expertise to efficiently
+										coordinate and oversee group tours, corporate excursions,
+										and various types of corporate events. Empowered with
+										cutting-edge technology, we offer exceptional travel
+										solutions and services. Our team of travel experts
+										meticulously crafts your itinerary, incorporating innovative
+										travel concepts and events to ensure a truly unforgettable
+										journey. Tailored to fit within your budget, our
+										personalized corporate tour packages are designed to deliver
+										effective travel solutions, prioritizing every minor comfort
+										to facilitate our clients in achieving their desired
+										success.
+									</p>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</section>
+
+			
+
+				<!-- 
+            - #ABOUT
+          -->
+
+				<section class="section about" id="about">
+          <div class="container">
+            <div class="about-content">
+              <p class="section-subtitle">About Us</p>
+              <p class="summary">
+                Since 2016, STV Tour has operated from the heart of the Indian
+                Capital, providing travelers with a personalized and expertly
+                handled experience. Our commitment to hands-on service,
+                around-the-clock support, and tailored solutions sets us apart.
+                We are not just a travel company; we are a dedicated team
+                striving to earn your confidence, business, and friendship.
+              </p>
+            </div>
+            <div class="about-1 temp-1">
+                <img
+                  src="./assets/images/about1.svg"
+                  height="300"
+                  width="300"
+                />
+              <div>
+                <h2>Established Expertise</h2>
+                <p>Operating since 2016, our experienced travel professionals bring expertise to ensure a seamless travel experience.</p>
+              </div>
+            </div>
+            <div class="about-1 temp-2">
+              
+				<img
+				  src="./assets/images/about2.svg"
+				  height="300"
+				  width="300"
+				/>
+              <div>
+                <h2>Personalized Service</h2>
+                <p>We take pride in personally handling every aspect of your travel arrangements, offering quality service and excellent value.</p>
+              </div>
+            </div>
+            <div class="about-1 temp-1">
+				<img
+				  src="./assets/images/about3.svg"
+				  height="300"
+				  width="300"
+				/>
+				<div>
+					<h2>Around-the-Clock Support</h2>
+					<p>Regardless of the direction or time of your travel, our team is dedicated to providing support whenever needed.</p>
+				</div>
+            </div>
+            <div class="about-1 temp-2">
+				<img
+				  src="./assets/images/about4.svg"
+				  height="300"
+				  width="300"
+				/>
+              <div>
+                <h2>Customer-Centric Approach</h2>
+                <p>We are committed to earning your confidence, business, and friendship through dedicated service and exceeding expectations.</p>
+              </div>
+            </div>
+            <div class="about-1 temp-1">
+				<img
+				  src="./assets/images/about5.svg"
+				  height="300"
+				  width="300"
+				/>
+				<div>
+					<h2>Opportunity for Connection</h2>
+					<p> Joining the STV family means more than business; it's about building a lasting relationship based on trust and mutual success.</p>
+				</div>
+            </div>
+            <div class="about-1 temp-2">
+              
+				<img
+				  src="./assets/images/about6.svg"
+				  height="300"
+				  width="300"
+				/>
+              <div>
+                <h2>Continuous Improvement</h2>
+                <p>We value feedback and continuously strive to improve our services for a positive and memorable experience.</p>
+              </div>
+            </div>
+            <div class="about-1 temp-1">
+				<img
+				  src="./assets/images/about7.svg"
+				  height="300"
+				  width="300"
+				/>
+				<div>
+					<h2>Community and Friendship</h2>
+					<p>Beyond business, we aim to create a sense of community and friendship within the STV family, ensuring your satisfaction and enjoyment are at the core of our mission.</p>
+				</div>
+            </div>
+            
+            </div>
+            <!-- <figure class="about-banner">
+              <img
+                src="./assets/images/about-banner.png"
+                width="756"
+                height="842"
+                loading="lazy"
+                alt=""
+                class="w-300"
+              />
+            </figure> -->
+          </div>
+        </section>
+
+		<!-- 
+            - #POPULAR
+          -->
+
+        <section class="section popular" id="popular">
+          <div class="container">
+            <p class="section-subtitle">From The Blog Post</p>
+
+            <h2 class="h2 section-title">Most Popular Tours Reviews</h2>
+
+            <ul class="popular-list">
+              <li>
+                <div class="popular-card">
+                  <figure class="card-banner">
+                    <img
+                      src="./assets/images/dubai1.jpg"
+                      width="518"
+                      height="518"
+                      loading="lazy"
+                      alt="Kuala Lumpur, Malaysia"
+                      class="img-cover1"
+                    />
+
+                    <!-- <span class="card-badge">
+                      <ion-icon name="time-outline"></ion-icon>
+
+                      <time datetime="P12D">12 Days</time>
+                    </span> -->
+                  </figure>
+
+                  <div class="card-content">
+                    <div class="card-wrapper">
+                      <!-- <div class="card-price">From $50.00</div> -->
+
+                      <div class="card-rating">
+                        <!-- <ion-icon name="star"></ion-icon>
+                        <ion-icon name="star"></ion-icon>
+                        <ion-icon name="star"></ion-icon>
+                        <ion-icon name="star"></ion-icon> -->
+                        <!-- <ion-icon name="star-outline"></ion-icon> -->
+
+                        <data value="2">Dubai</data>
+                      </div>
+                    </div>
+
+                    <h3 class="card-title">
+                      Grateful to STV Tours for an exceptional Dubai experience.
+                      Seamless planning, great accommodations, and unforgettable
+                      moments. Thank you.
+                    </h3>
+
+                    <address class="card-location">By - Tradeindia.com</address>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <div class="popular-card">
+                  <figure class="card-banner">
+                    <img
+                      src="./assets/images/popular-2.jpg"
+                      width="518"
+                      height="518"
+                      loading="lazy"
+                      alt="Kuala Lumpur, Malaysia"
+                      class="img-cover1"
+                    />
+
+                    <!-- <span class="card-badge">
+                      <ion-icon name="time-outline"></ion-icon>
+
+                      <time datetime="P12D">12 Days</time>
+                    </span> -->
+                  </figure>
+
+                  <div class="card-content">
+                    <div class="card-wrapper">
+                      <!-- <div class="card-price">From $50.00</div> -->
+
+                      <div class="card-rating">
+                        <!-- <ion-icon name="star"></ion-icon>
+                        <ion-icon name="star"></ion-icon>
+                        <ion-icon name="star"></ion-icon>
+                        <ion-icon name="star"></ion-icon> -->
+
+                        <data value="2">Phuket krabi, Thailand</data>
+                      </div>
+                    </div>
+
+                    <h3 class="card-title">
+                      STV Tours expertly curated an unforgettable Phuket-Krabi tour in Thailand. 
+                      Meticulously managed logistics, awe-inspiring landscapes, and a rich cultural 
+                      tapestry combined for a truly phenomenal experience. Gratitude for orchestrating 
+                      a remarkable journey.
+                    </h3>
+
+                    <address class="card-location">By - Tradeindia.com</address>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <div class="popular-card">
+                  <figure class="card-banner">
+                    <img
+                      src="./assets/images/popular-3.jpg"
+                      width="518"
+                      height="518"
+                      loading="lazy"
+                      alt="Kuala Lumpur, Malaysia"
+                      class="img-cover1"
+                    />
+
+                    <!-- <span class="card-badge">
+                      <ion-icon name="time-outline"></ion-icon>
+
+                      <time datetime="P12D">10 Days</time>
+                    </span> -->
+                  </figure>
+
+                  <div class="card-content">
+                    <div class="card-wrapper">
+                      <!-- <div class="card-price">From $50.00</div> -->
+
+                      <div class="card-rating">
+                        <!-- <ion-icon name="star"></ion-icon>
+                        <ion-icon name="star"></ion-icon>
+                        <ion-icon name="star"></ion-icon>
+                        <ion-icon name="star"></ion-icon> -->
+                        <!-- <ion-icon name="star-outline"></ion-icon> -->
+
+                        <data value="2">Mauritius </data>
+                      </div>
+                    </div>
+
+                    <h3 class="card-title">
+                      STV Tours surpassed expectations with meticulous planning and 
+                      outstanding services. Sincere thanks for ensuring our journey was 
+                      truly remarkable. Highly recommended for travel excellence!
+                    </h3>
+
+                    <address class="card-location">By - Mayank Sharma</address>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </section>
+			</article>
+		</main>
+
+		<!-- 
+        - #FOOTER
+      -->
+
+		<footer
+      class="footer"
+      style="background-image: url('./assets/images/footer-bg.png')"
+    >
+      <div class="container">
+        <div class="footer-top">
+
+          <ul class="footer-list">
+            <li>
+              <p class="footer-list-title">Quick links</p>
+            </li>
+
+            <li>
+              <a href="#about" class="footer-link">About</a>
+            </li>
+
+            <li>
+              <a href="mailto:info@stvworld.co.in" class="footer-link">Contact</a>
+            </li>
+			
+			<li>
+				<a href="/terms.html#privacyPolicy" class="footer-link">Privacy Policy</a>
+			</li>
+
+			<li>
+				<a href="/terms.html#refundCancellationPolicy" class="footer-link">Re-fund & Cancellation</a>
+			</li>
+
+            <li>
+              <a href="/terms.html#termsAndConditions" class="footer-link">Terms & Conditions</a>
+            </li>
+          </ul>
+
+          <div class="footer-list">
+            <p class="footer-list-title">Get in touch</p>
+
+            <ul>
+              <li>+91-9999002735</li>
+              <li>
+                <a href="mailto:info@stvworld.co.in">info@stvworld.co.in</a>
+              </li>
+              <li>A-31, Sector 4, Noida, Uttar Pradesh (201301)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <a href="#" class="logo">STV Tours and Events Private Limited</a>
+        </div>
+      </div>
+    </footer>
+
+		<!-- 
+        - #GO TO TOP
+      -->
+
+		<a href="#top" class="go-top" data-go-top aria-label="Go To Top">
+			<ion-icon name="chevron-up-outline"></ion-icon>
+		</a>
+
+		<!-- 
+        - custom js link
+      -->
+		<script src="./assets/js/script.js"></script>
+
+		<!-- 
+        - ionicon link
+      -->
+		<script
+			type="module"
+			src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+		<script
+			nomodule
+			src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+	</body>
+</html>

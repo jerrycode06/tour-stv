@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tourest - Explore the World</title>
+
+    <!-- 
+      - favicon
+    -->
+    <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml" />
+
+    <!-- 
+      - custom css link
+    -->
+    <link rel="stylesheet" href="./assets/css/style.css" />
+
+    <!-- 
+      - google font link
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Comforter+Brush&family=Heebo:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/10.6.0/firebase-app-compat.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/10.6.0/firebase-auth-compat.js"></script>
+    <script
+      defer
+      src="/__/firebase/10.6.0/firebase-database-compat.js"
+    ></script>
+    <script
+      defer
+      src="/__/firebase/10.6.0/firebase-firestore-compat.js"
+    ></script>
+    <script
+      defer
+      src="/__/firebase/10.6.0/firebase-functions-compat.js"
+    ></script>
+    <script
+      defer
+      src="/__/firebase/10.6.0/firebase-messaging-compat.js"
+    ></script>
+    <script defer src="/__/firebase/10.6.0/firebase-storage-compat.js"></script>
+    <script
+      defer
+      src="/__/firebase/10.6.0/firebase-analytics-compat.js"
+    ></script>
+    <script
+      defer
+      src="/__/firebase/10.6.0/firebase-remote-config-compat.js"
+    ></script>
+    <script
+      defer
+      src="/__/firebase/10.6.0/firebase-performance-compat.js"
+    ></script>
+    <!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+
+    <style media="screen">
+      body {
+        background: #eceff1;
+        color: rgba(0, 0, 0, 0.87);
+        font-family: Roboto, Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      #message {
+        background: white;
+        max-width: 360px;
+        margin: 100px auto 16px;
+        padding: 32px 24px;
+        border-radius: 3px;
+      }
+      #message h2 {
+        color: #ffa100;
+        font-weight: bold;
+        font-size: 16px;
+        margin: 0 0 8px;
+      }
+      #message h1 {
+        font-size: 22px;
+        font-weight: 300;
+        color: rgba(0, 0, 0, 0.6);
+        margin: 0 0 16px;
+      }
+      #message p {
+        line-height: 140%;
+        margin: 16px 0 24px;
+        font-size: 14px;
+      }
+      #message a {
+        display: block;
+        text-align: center;
+        background: #039be5;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: white;
+        padding: 16px;
+        border-radius: 4px;
+      }
+      #message,
+      #message a {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      }
+      #load {
+        color: rgba(0, 0, 0, 0.4);
+        text-align: center;
+        font-size: 13px;
+      }
+      #refundCancellationPolicy {
+        margin: 20px;
+        padding-top: 100px;
+      }
+
+      .height-box {
+        height: 20px;
+      }
+
+      .terms-divider {
+        width: 100%;
+        height: 1px;
+        background-color: black;
+        margin-bottom: 50px;
+      }
+
+      #termsAndConditionDiv {
+        margin: 20px;
+      }
+      @media (max-width: 600px) {
+        body,
+        #message {
+          margin-top: 0;
+          background: white;
+          box-shadow: none;
+        }
+        body {
+          border-top: 16px solid #ffa100;
+        }
+      }
+    </style>
+  </head>
+
+  <body id="top">
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const loadEl = document.querySelector("#load");
+        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+        // // The Firebase SDK is initialized and available here!
+        //
+        // firebase.auth().onAuthStateChanged(user => { });
+        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
+        // firebase.firestore().doc('/foo/bar').get().then(() => { });
+        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
+        // firebase.messaging().requestPermission().then(() => { });
+        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+        // firebase.analytics(); // call to activate
+        // firebase.analytics().logEvent('tutorial_completed');
+        // firebase.performance(); // call to activate
+        //
+        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+
+        try {
+          let app = firebase.app();
+          let features = [
+            "auth",
+            "database",
+            "firestore",
+            "functions",
+            "messaging",
+            "storage",
+            "analytics",
+            "remoteConfig",
+            "performance",
+          ].filter((feature) => typeof app[feature] === "function");
+          loadEl.textContent = `Firebase SDK loaded with ${features.join(
+            ", "
+          )}`;
+        } catch (e) {
+          console.error(e);
+          loadEl.textContent =
+            "Error loading the Firebase SDK, check the console.";
+        }
+      });
+    </script>
+    <!-- Form Popup -->
+    <div class="overlay" id="overlay"></div>
+    <form class="popup" id="myPopup">
+      <div class="containe">
+        <h2>Holiday Package Booking</h2>
+
+        <!-- Top Section: Holiday Package Details -->
+        <div class="form-group">
+          <label for="source">Source Name:</label>
+          <input type="text" id="source" name="source" />
+        </div>
+
+        <div class="form-group">
+          <label for="destination">Destination Name:</label>
+          <input type="text" id="destination" name="destination" />
+        </div>
+
+        <div class="form-group">
+          <label for="dateFrom">Date From:</label>
+          <input type="date" id="dateFrom" name="dateFrom" />
+        </div>
+
+        <div class="form-group">
+          <label for="dateTo">Date To:</label>
+          <input type="date" id="dateTo" name="dateTo" />
+        </div>
+
+        <!-- Bottom Section: Personal Details -->
+        <h2>Personal Details</h2>
+
+        <div class="form-group">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" />
+        </div>
+
+        <div class="form-group">
+          <label for="number">Phone Number:</label>
+          <input type="tel" id="number" name="number" />
+        </div>
+
+        <div class="form-group">
+          <label for="company">Company Name:</label>
+          <input type="text" id="company" name="company" />
+        </div>
+
+        <button type="submit" onclick="onSubmit(event)">Submit</button>
+      </div>
+      <button class="close-popup-btn" onclick="closePopup(e)">X</button>
+    </form>
+
+    <!-- 
+        - #HEADER
+      -->
+
+    <header class="header" data-header>
+      <div class="container">
+        <a class="logo" href="/index.html">
+          <img src="readme-images/7475999.webp" alt="logo" />
+          <h1 class="logo-text">STV Tours</h1>
+        </a>
+
+        <button
+          class="nav-toggle-btn"
+          data-nav-toggle-btn
+          aria-label="Toggle Menu"
+        >
+          <ion-icon name="menu-outline" class="open"></ion-icon>
+          <ion-icon name="close-outline" class="close"></ion-icon>
+        </button>
+
+        <nav class="navbar">
+          <ul class="navbar-list">
+            <!-- <li>
+              <a href="#" class="navbar-link">Home</a>
+            </li> -->
+
+            <!-- <li>
+							<a href="#" class="navbar-link">Services</a>
+						</li> -->
+            <!-- 
+            <li>
+              <a href="#" class="navbar-link">Tours</a>
+            </li> -->
+
+            <!-- <li>
+							<a href="#about" class="navbar-link">About Us</a>
+						</li>
+
+						<li>
+							<a href="#popular" class="navbar-link">Blog</a>
+						</li> -->
+
+            <!-- <li>
+              <a href="#" class="navbar-link">Contact Us</a>
+            </li> -->
+          </ul>
+
+          <button
+            id="#form-button"
+            onclick="showPopup()"
+            class="btn btn-secondary"
+          >
+            Contact Us
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <div id="refundCancellationPolicy">
+      <h2>Refund & Cancellation Policy</h2>
+      <div class="terms-divider"></div>
+      <h3>REFUND</h3>
+      <div class="height-box"></div>
+      <p>
+        Refunds will be processed as per the airline / hotel fare rules and
+        cancellation policy. Such refunds shall be subject to STV Tours
+        receiving the same from the airlines. However, the convenience fee paid
+        to STV Tours paid at the time of booking is a non-refundable fee.
+      </p>
+      <div class="height-box"></div>
+      <p>
+        All cancellations made directly with the airline need to be intimated to
+        STV Tours, in order to initiate the process of refund. The processing
+        time for refunds may vary depending on the mode of payment, bank, etc.
+        The refund shall be processed after deducting the STV Tours service fee,
+        which is independent of the convenience fee as mentioned above.
+      </p>
+      <div class="height-box"></div>
+      <p>
+        The refund will be credited with in 7 days to the same account from
+        which the payment was made. For example, if the User used a credit card,
+        STV Tours will make an appropriate charge reversal to the same credit
+        card; likewise, if the User used a debit card, STV Tours will credit the
+        money to the same debit card.
+      </p>
+      <div class="height-box"></div>
+      <p>
+        In the event of cancellation and refund of partially utilized tickets,
+        upfront discount and promo code discount availed at the time of booking
+        would be deducted from the refund amount.
+      </p>
+      <div class="height-box"></div>
+
+      <h3>CHANGES IN EXISTING BOOKING</h3>
+      <div class="height-box"></div>
+      <p>
+        Any changes to an existing booking will be subject to the charges levied
+        by the Charter Company. The User shall be obligated to pay applicable
+        charges in the event of any alternation or modification to the existing
+        booking.
+      </p>
+      <br />
+      <h3>CANCELLATION OF TICKET</h3>
+      <div class="height-box"></div>
+      <p>
+        • Cancellation of tickets can be done either through email to STV Tours
+        or by calling on the customer care number. <br />
+        • Any cancellation is subject to such cancellation charges as mentioned
+        on the ticket.
+      </p>
+      <br />
+      <h3>PAYMENTS FOR BOOKINGS, AND CANCELLATIONS</h3>
+      <div class="height-box"></div>
+      <p>
+        • Reservations will be subject to cancellation and refund policies of
+        the Activity Provider which may vary from time to time. <br />
+        • STV Tours may charge applicable taxes or service charge, convenience
+        fees etc. wherever applicable. Any booking is subject to applicable
+        cancellation policy set out on the booking page or as communicated to
+        the User at the time of booking.
+      </p>
+
+      <!-- Add other sections and content as needed -->
+    </div>
+    <div id="termsAndConditions"></div>
+    <br /><br /><br /><br /><br /><br />
+
+    <div id="termsAndConditionDiv">
+      <h2>Terms and Conditions</h2>
+      <div class="terms-divider"></div>
+      <p>
+        Welcome to STV Tours, We are glad that you choose us to serve you for
+        providing the best travel experience. We always endeavor to offer you a
+        very delightful tour & travel experience. At the same time, we ask you
+        to read and follow our below Terms and Conditions. The domain name of
+        the website is owned by STV Tours and Events Private Limited
+        (“we/us/our/TT”), the company registered under the provisions of the
+        Companies Act, 1956. In order to use this website, you must give your
+        unqualified consent to our Terms and Conditions and if you don’t agree
+        with any part of these Terms and Conditions, we kindly ask you to not
+        use this website in any way. Hence, please make sure that you go through
+        these Terms and Conditions very carefully to avoid any ambiguity or
+        misunderstanding and ensure a smooth and joyful tour experience.
+      </p>
+      <div class="height-box"></div>
+      <h3>Description & Commencement</h3>
+      <div class="height-box"></div>
+      <p>
+        These Terms and Conditions be called STV Tours and Events Private
+        Limited ( A Domestic and International Destination Management Company or
+        Travel or Event Company ) Terms and Conditions. STV Tours and Events
+        Private Limited will be hereinafter referred as “STV Tours”, “the
+        Company”, “we”, “us” or “our” and its users our customers referred as
+        “Guest”, “them” or “they”, “You”, “Your”. These Terms & Conditions
+        applicable to all Domestic and International Tours, Corporate Tour,
+        Group Tour, Customized Tour & Travel Packages, Holiday Packages, and
+        itinerary organized by STV Tours and Events Private Limited. By using
+        our website, you give your unqualified consent to the website’s terms of
+        use, and you confirm to comply with these.
+      </p>
+      <div class="height-box"></div>
+      <h3>Definitions</h3>
+      <div class="height-box"></div>
+      <p>
+        In these Terms and Conditions, or else the context requires STV Tours
+        and Events Private Limited works under the name ‘STV Tours’, therefore,
+        these both names shall be considered one and the same and used
+        synonymously everywhere. Guest/s means all the customers, groups,
+        persons, clients, tourist, travellers, visitors, sightseers, who have
+        submitted their names or inquired about tour/itinerary packages or
+        booked a tour by giving partial or full payment for any confirmed or
+        planned tours, customized tour/packages or any other travel related
+        services provided by STV Tours ( which expression shall, unless it be
+        repugnant to the context or meaning and include their
+        concerned/respective heirs, executors, and administrators ) Customized
+        Tour/Travel/Holiday package means a modified holiday or tour wherein an
+        itinerary is designed as per the requirements of individuals or groups.
+        FIT means Free Independent Travel, though STV Tours does not entertain
+        this travel service (FIT) and only entertain GIT, means Group Inclusive
+        Tour/Group Tour/Corporate Tour Tour/s or Travel means any Domestic or
+        International Tours organized by STV Tours Domestic or India tours
+        designed for anyone to explore the states of India and the Indian
+        subcontinent from India. MICE/Corporate tour/ means particular group
+        tourism dedicated to booking, planning, and facilitating Meetings,
+        Incentives, Conferences, Exhibitions, Seminars, and other events. Allied
+        service providers contain Hotel, management, airlines, caterers,
+        restaurants, places of entertainment like theme parks, museums, art
+        galleries, tour guides who provide the services to the Guests. We don’t
+        fix the price for the tours provided by us as we only entertain
+        Corporate/Group tour which is generally customized/modified as per the
+        guests’ choice or requirement so the finalized price of such tour is
+        subjected to be vary depending on requirements. The first day of the
+        group tour/itinerary/corporate tour/ may start at any time, Be it
+        morning, afternoon, or evening, at the very first
+        location/destination/site depending on the arrival of scheduled or
+        concerned flight/train/cruise or any other mode of transportation and
+        the same will be applicable in case of the last day of the tour. In a
+        nutshell, a ‘Day” shall mean a duration/period/time or part of the day
+        or 24hrs or its relative part thereof.
+      </p>
+      <div class="height-box"></div>
+      <h3>Force Majeure:</h3>
+      <div class="height-box"></div>
+      <p>
+        Neither STV Tours nor any of its parents, affiliates, subsidiaries,
+        employees, officers, directors, agents, tour managers, or suppliers and
+        their respective successors, heirs and permitted assigns shall be
+        responsible for, or be deemed to be in default on account of, any
+        failure to perform or due to delay in execution or performance of any of
+        its obligations hereunder, in whole or in part, if such execution is
+        rendered impracticable by the occurrence of acts of war, whether
+        declared or undeclared, embargo, sabotage, acts of terrorism, riot or
+        other civil disruption. Which shall further express as below:
+        <br />• Declared or undeclared war, hostile invasion, act of foreign
+        enemies; <br />• Civil disruption, riot, rebellion, revolution,
+        insurrection or military or usurped power or civil war <br />•
+        Explosion, Epidemic, fire, flood, earthquake, or other exceptional
+        natural calamity and act of God <br />• Ionizing radiation or
+        contamination by radioactivity from any nuclear fuel, or from any
+        nuclear waste/refuse from the combustion or process of nuclear fuel,
+        radioactive or toxic explosive, or other hazardous properties of any
+        explosive or radioactive nuclear assembly or nuclear component of such
+        <br />• Any act or omission of any state of central government
+        instrumentality <br />• A change in legal requirements <br />• Strikes,
+        lockouts or other industrial disruption or disturbances; <br />• Sudden
+        huge weather change or abnormal weather or sea/ocean conditions
+        including tempest, lightning, hurricane, typhoon, rain & temperatures.
+        Both you and STV Tours shall use their best effort to avoid, overcome
+        and offset the effects of any cause or potential cause of an event of
+        Force Majeure. Upon cessation of the reason of the Force majeure, the
+        Terms of Use given hereinafter shall again become fully operative.
+        However, a Force majeure event shall not relieve you or STV Tours of the
+        obligations accrued prior to the occurrence of the Force majeure.
+        website means https://www.stvworld.co.in/ Tour manager/escort, leader: A
+        person designated by the company to assist/guide/escort/ the guests in
+        and or during India and/or World Tours Organized by STV Tours. VISA
+        means a certificate or a legal document issued by a competent authority,
+        immigration department or other authorities of a country to show/display
+        or prove that the applicant’s credentials or identity has been verified
+        and he or she has been granted permission to enter the country for a
+        temporary stay within a certain or specified or declared period. (please
+        note the company does not have any role to play for issuance/ rejection
+        of Visas other than being a guide or facilitator) Terms and Conditions
+        mean all these terms and conditions including booking criteria, tour
+        payment, tour packages, itinerary, web pages, and its form submission,
+        and other documents as may be updated from time to time. However, at any
+        moment, if you need any clarification or more information regarding our
+        services.
+      </p>
+      <div class="height-box"></div>
+      <!-- Add other sections and content as needed -->
+      <div class="height-box"></div>
+
+      <!-- /// privacy policy//// -->
+      <div id="privacyPolicy"></div>
+      <br /><br /><br /><br /><br /><br />
+
+      <h2 id="privacyPolicyDiv">Privacy Policy</h2>
+      <div class="terms-divider"></div>
+
+      <p>
+        At STV TOURS AND EVENTS, your personal privacy is very important to us,
+        and so is being transparent about how we collect, use, and share the
+        information we hold about you. This policy is intended to help you
+        clearly understand:
+      </p>
+      <div class="height-box"></div>
+
+      <h3>What information we collect about you</h3>
+      <div class="height-box"></div>
+      <p>
+        We collect information about you when either you or your employer
+        provide it to us, when you use our Services, and when other sources
+        provide it to us, as further described below.
+      </p>
+      <br />
+      <h3>Account and profile information:</h3>
+      <br />
+      We collect information about you that we reasonably need for our business
+      functions and activities and which is required by law. We use the
+      information you provide to us to book and manage travel, accommodation,
+      car rental, group events such as conferences and meetings, and other
+      related products and services on your behalf and as your agent. We use
+      your personal preferences and requirements when coordinating timetables
+      and availability, and your financial and contact details to purchase,
+      deliver and provide notifications of reservations and other communications
+      related to these services. We may collect personal information about you
+      such as: <br />
+      <br />
+      • Your name; <br />
+      <br />
+      • Your contact details, including residential or business address,
+      telephone number and email; <br />
+      <br />
+      • Company details (if applicable); <br />
+      <br />
+      • Date of birth; <br />
+      <br />
+      • Payment information; and <br />
+      <br />
+      • Travel-related details including passport details, frequent flyer
+      details, drivers licence and other similar information. <br />
+      <br />
+      While you travel we will use your contact and itinerary information to
+      facilitate your journey and deal with third-party suppliers on your
+      behalf, and afterwards the relevant detail of your journey or event feeds
+      into our billing processes. Where you have booked through a business we
+      may provide your journey data and other associated reporting to the
+      assigned business contact for management information. For business or
+      corporate customers, your access to the Services is provided via a
+      contract between STV Tours and your employer, therefore our legal basis
+      for processing your personal data under the GDPR is ‘Performance of
+      Contract’.
+
+      <!-- Add other content as needed -->
+      <div class="height-box"></div>
+
+      <h3>How we use information we collect from you</h3>
+      <div class="height-box"></div>
+      <p>
+        How we use the information we collect depends in part on which Services
+        you use, how you use them, and any preferences you have communicated to
+        us. Below are the specific purposes for which we use the information we
+        collect about you.
+      </p>
+      <br />
+      <b>To provide the Services and personalise your experience:</b>
+      <br />
+      <br />We use information about you to provide the Services to you, such as
+      booking and managing travel and accommodation, renting vehicles, providing
+      peripheral services such as visa assistance and travel insurance,
+      arranging and managing events and tours, and providing travel technology
+      solutions, among others. <br />We use the information about you to process
+      transactions with you, authenticate you when you log in, provide customer
+      support, and operate and maintain the Services. <br />Our Services also
+      include tailored features that personalise your experience by
+      automatically analysing your activities to provide search results,
+      notifications, and recommendations that are most relevant for you. Where
+      you use multiple Services, we combine information about you and your
+      activities to provide an integrated experience, such as to allow you to
+      find information from one Service while searching from another or to
+      present relevant product information. <br /><br /><b
+        >To communicate with you about the Services:</b
+      >
+      <br /><br />
+      We use your contact information to send transactional communications via
+      email and within the Services, including confirming your bookings,
+      providing itineraries, providing customer support, and sending you
+      technical notices, updates, security alerts, and administrative messages.
+      These communications are part of the Services, and in most cases, you are
+      unable to opt out of them. If an opt out option is available, you will
+      find that option within the communication itself or in your account
+      settings.
+      <br /><br />
+      <b>To market, promote and drive engagement with the Services:</b>
+      <br /><br />
+      We use your contact information and information about how you use the
+      Services to send promotional communications that may be of specific
+      interest to you, including by email. These communications are aimed at
+      driving engagement and maximising what you get out of the Services,
+      including information about new features, survey requests, newsletters,
+      and events we think may be of interest to you. We also communicate with
+      you about new product offers, promotions and contests. You can control
+      whether you receive these communications as described below under “Opt-out
+      of communications”.
+      <br />
+
+      <!-- Add other content as needed -->
+      <div class="height-box"></div>
+
+      <h3>Third Party Website Links</h3>
+      <div class="height-box"></div>
+      <p>
+        Our website may include automatic links to third party banner or to
+        other internet websites at some points as part of a specific purpose. We
+        want to clarify that we do not share any sort of your personal data or
+        information with these third party websites or links unless you allow us
+        to do so.
+      </p>
+      <!-- Add other content as needed -->
+      <div class="height-box"></div>
+
+      <h3>Transfer of Your Personal Information</h3>
+      <div class="height-box"></div>
+      <p>
+        STV Tours head office is situated in Noida, Uttar Pradesh from where we
+        execute our travel operations. Our tour managers may keep your
+        information related to your visa, passport details in order to assist
+        you while check-in and check-out at the Airports or furnishing details
+        at immigration whenever it requires. This also means that customer data
+        would be transferred to, and stored at, a destination outside of your
+        country/India ( only when you are booking or planning a tour or
+        itinerary with us ). However, we ensure the full confidentiality of the
+        customer information by our secure method of data storage in offline or
+        online. In order to book your tour or itinerary, we may share your
+        personal data with allied service providers such as Hotels, Airlines,
+        Destination or Travel Management Companies, Transport Service Providers
+        or any other supplementary involved in customizing, booking or purchase.
+        Please take note that while booking or planning a tour or itinerary with
+        us, You authorize us to share information relevant to the said allied
+        service providers. You are also advised to go through the privacy
+        policies of the respective suppliers whose services you select to avail
+        as how the said allied service providers use or process the information
+        shared with them is beyond our authorization and purview. We may need to
+        share customer data with our business partners like Banks, Insurance
+        Companies, Visa Consulates, International SIM Card providers, etc. STV
+        Tours may disclose customer data or your personal information if and
+        when required by law. The data or information will be disclosed or
+        furnished when it is necessary to comply with a court order, any
+        on-going judicial proceeding, or other legal process served on us or to
+        execute the legal rights or defend against legal claims in bona fide
+        situations.
+      </p>
+      <!-- Add other content as needed -->
+      <div class="height-box"></div>
+
+      <h3>Marketing Use</h3>
+      <div class="height-box"></div>
+      <p>
+        We may use your personal data provided by you through
+        booking/purchasing/form or survey on our website, to contact or notify
+        you via email, telephonic and/or other electronic/non-electronic means
+        of correspondence. Our notification or update may be related to the
+        query that you submitted on our website or through phone call, and to
+        inform you regarding the updates during or in the meantime of
+        booking/purchasing of a tour with us. However, at any point of time, You
+        can ask us to not process your personal information for marketing
+        purposes by sending a request to our E-mail address: info@stvworld.co.in
+        You also give us your consent to use your photographs captured during
+        tours to be published on our website, and our preferred social media
+        platforms for only marketing and advertisement objectives.
+      </p>
+      <!-- Add other content as needed -->
+      <div class="height-box"></div>
+
+      <h3>Protection and Security of Data</h3>
+      <div class="height-box"></div>
+      <p>
+        STV Tours always endeavors to ensure the protection of your personal
+        data seriously, but information transmitted via the internet is never
+        fully secure and we cannot guarantee the security of your transmitted
+        data. Hence, any transmission or submission of data done through the
+        internet is at your own risk. However, our website is equipped with
+        stringent security measures to prevent the alteration, loss, and misuse
+        of the information. Though your data remains safe with us, we cannot
+        assure the full security or breach of your personal information. Under
+        no circumstances, STV Tours will be held responsible for any loss or
+        breach of your personal information due to malicious attempts of
+        unlawful activity or interception of your personal data done by a third
+        party/other party of your personal information or private
+        communications.
+      </p>
+      <!-- Add other content as needed -->
+      <div class="height-box"></div>
+
+      <h3>Intellectual Property Rights (IPR)</h3>
+      <div class="height-box"></div>
+      <p>
+        We have Trademarks, Watermarks, and Copyrights registered in the name of
+        STV Tours and our Director. Our products; tour packages, itinerary,
+        etc., our ideas and concepts published on websites, social media
+        platforms, or other online or offline presence, are predominantly
+        developed by us. You agree that You will not use or display any
+        registered IPR without our prior written consent being received from .
+        Any party or individual who attempts or exercises to infringe
+        Intellectual Property Rights vested upon us shall face legal
+        consequences.
+      </p>
+      <!-- Add other content as needed -->
+      <div class="height-box"></div>
+
+      <h3>Authenticity of Data</h3>
+      <div class="height-box"></div>
+      <p>
+        STV Tours does not take responsibility for any sort of authenticity,
+        accuracy, and correctness of demographic information or personal data
+        provided by you. It is your duty to furnish correct details or
+        information as per your legal or government authorized documents/IDs.
+      </p>
+      <!-- Add other content as needed -->
+      <div class="height-box"></div>
+
+      <h3>Changes to This Privacy Policy</h3>
+      <div class="height-box"></div>
+      <p>
+        Our privacy policy is subjected to revised and updated at any time
+        without notice. By browsing, opening, using this website for
+        transactions or storing any data/information, You give your consent to
+        comply with the updated or latest revised privacy policy in effect at
+        such time. Hence, you have to make sure you have access to the updated
+        privacy policy.
+      </p>
+      <!-- Add other content as needed -->
+    </div>
+
+    <!-- 
+        - #FOOTER
+      -->
+
+    <footer
+      class="footer"
+      style="background-image: url('./assets/images/footer-bg.png')"
+    >
+      <div class="container">
+        <div class="footer-top">
+          <ul class="footer-list">
+            <li>
+              <p class="footer-list-title">Quick links</p>
+            </li>
+
+            <li>
+              <a href="mailto:info@stvworld.co.in" class="footer-link"
+                >Contact</a
+              >
+            </li>
+
+            <li>
+              <a href="#privacyPolicy" class="footer-link">Privacy Policy</a>
+            </li>
+
+            <li>
+              <a href="#refundCancellationPolicy" class="footer-link"
+                >Re-fund & Cancellation</a
+              >
+            </li>
+
+            <li>
+              <a href="#termsAndConditions" class="footer-link"
+                >Terms & Conditions</a
+              >
+            </li>
+          </ul>
+
+          <div class="footer-list">
+            <p class="footer-list-title">Get in touch</p>
+
+            <ul>
+              <li>+91-9999002735</li>
+              <li>
+                <a href="mailto:info@stvworld.co.in">info@stvworld.co.in</a>
+              </li>
+              <li>A-31, Sector 4, Noida, Uttar Pradesh (201301)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <a href="#" class="logo">STV Tours and Events Private Limited</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- 
+        - #GO TO TOP
+      -->
+
+    <a href="#top" class="go-top" data-go-top aria-label="Go To Top">
+      <ion-icon name="chevron-up-outline"></ion-icon>
+    </a>
+
+    <!-- 
+        - custom js link
+      -->
+    <script src="./assets/js/script.js"></script>
+
+    <!-- 
+        - ionicon link
+      -->
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
+  </body>
+</html>
