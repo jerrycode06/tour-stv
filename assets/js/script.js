@@ -34,8 +34,7 @@ function showPopup() {
   document.getElementsByClassName("overlay")[0].style.display = "block";
 }
 
-function closePopup(e) {
-  e.preventDefault();
+function closePopup() {
   document.getElementById("source").value = "";
   document.getElementById("destination").value = "";
   document.getElementById("dateFrom").value = "";
@@ -80,5 +79,5 @@ function onSubmit(e) {
     company: company,
   };
   console.log(details);
-  closePopup(e);
+  closePopup();
 }
